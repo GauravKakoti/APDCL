@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+<script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js'></script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
+
+
+    <title>Document</title>
+
+    <style>
+        #map{
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .marker {
+  background-image: url('marker.png');
+  background-size: cover;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+    </style>
+</head>
+<body>
+    
+
+    <div id='map' ></div>
+<script>
+
+// const consumers={
+//   "cons" :
+//   [{
+//     "Cons No": "133000000001",
+//     "Dtr No": "519",
+//     "Category": "46",
+//     "Load": "0.32",
+//     "Latitude": "24.9403737",
+//     "Longitude": "92.6029585"
+//   },
+//   {
+//     "Cons No": "133000000002",
+//     "Dtr No": "519",
+//     "Category": "46",
+//     "Load": "0.82",
+//     "Latitude": "24.9385641",
+//     "Longitude": "92.6004784"
+//   },
+//   {
+//     "Cons No": "133000000004",
+//     "Dtr No": "519",
+//     "Category": "46",
+//     "Load": "1.0",
+//     "Latitude": "24.9349673",
+//     "Longitude": "92.5977976"
+//   },
+
+// ]
+// }
+
+
+
+  mapboxgl.accessToken = 'pk.eyJ1Ijoic2FtYW5uYXlhMDMiLCJhIjoiY2w1eG1yOW9sMHY4MjNrbXB2amN6ZTZkMyJ9.QdP-WRqd5iGJRV41XEDVAw';
+  var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v11',
+    center : [92.6029585,24.9403737],
+    zoom: 9
+    
+  });
+
+  map.addControl(new mapboxgl.NavigationControl());
+
+ 
+
+  fetch("./newcons.json").then(res=>res.json()).then(
+
+(cons)=>{
+        // add markers to map
+        for (const con of cons){
+  // create a HTML element for each feature
+  const el = document.createElement('div');
+  el.className = 'marker';
+
+  // make a marker for each feature and add to the map
+  new mapboxgl.Marker(el).setLngLat([con.Longitude,con.Latitude]).addTo(map);
+}
+
+}
+
+  ).catch((e)=>alert("didnot fetch"))
+
+
+  
+
+
+  
+
+
+</script>
+
+</body>
+</html>
