@@ -2,9 +2,9 @@
 
 # Week 1:
 
-1.  get The dataset
-2.  analyse the dataset
-3.  modify according to requirement
+1.  Get the dataset
+2.  Analyse the dataset
+3.  Modify according to requirement
 
 # Week 2:
   1. Plot the consumers on map
