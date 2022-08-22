@@ -4,13 +4,47 @@ import * as tt from '@tomtom-international/web-sdk-maps';
 import '@tomtom-international/web-sdk-maps/dist/maps.css';
 import data from './data/data';
 
+import axios, { Axios } from 'axios';
+
 function App() {
   const mapElement = useRef();
+
   const [map, setMap] = useState({});
   const [latitude, setLatitude] = useState(24.9403737);
   const [longitude, setLongitude] = useState(92.6029585);
 
+  const [cons, setCons] = useState([]);
+
+  let filtered = [];
+
+  var result = {};
+
+  const clickCall = (Dtr_No) => {
+    const consumers = result.data.data;
+
+    filtered = consumers.filter((consumer) => {
+      return consumer.dtrno == Dtr_No;
+    });
+
+    console.log(filtered);
+
+    filtered.map((fconsumer) => {
+      console.log(
+        `Load: ${fconsumer.Load}, Lon: ${fconsumer.Longitude} , Lat: ${fconsumer.Latitude}, Cons_No.:${fconsumer['Cons No']}`
+      );
+    });
+
+    console.log(`dtr number ${Dtr_No} is clicked `);
+  };
+
   useEffect(() => {
+    const fetchData = async () => {
+      result = await axios.get(
+        'https://script.googleusercontent.com/macros/echo?user_content_key=FbESSpRnFSVI2O2c5eih2msNbsvTTvShwbSXYqxTqb4RQd3B9JffBhRmYCNEm77O-ygvBpZRG8kDZ5JIGg5m48A66FIdrRZnm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnPkbKJ6p87Z6a6XjngdpwXmhSXeoPwRFH750V-LkIhHCmAgTyx7_CNO3fqxUtbkDfGfPsMUp7uInJJ8rLakbPKZtT-N27jKbnw&lib=M7EeGPs2FL0kSAxd6fciygLCijSy8ole7'
+      );
+      setCons(result.data.data);
+    };
+    fetchData();
     // const data = [
     //   {
     //     '': '0',
@@ -69,6 +103,10 @@ function App() {
           .addTo(map);
 
         marker.setPopup(popup).togglePopup();
+
+        element.addEventListener('click', () => {
+          clickCall(dtr.Dtr_No);
+        });
       });
     };
 
