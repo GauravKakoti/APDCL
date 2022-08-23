@@ -44,7 +44,10 @@ function App() {
       );
       setCons(result.data.data);
     };
+
     fetchData();
+
+    // testing using some data
     // const data = [
     //   {
     //     '': '0',
