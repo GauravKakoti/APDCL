@@ -2,8 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import './App.css';
 import * as tt from '@tomtom-international/web-sdk-maps';
 import '@tomtom-international/web-sdk-maps/dist/maps.css';
+//import Modal from './Components/Modal';
+//------------------------------------------
+import axios, { Axios } from 'axios';
+//--------------------------------------
 import data from './data/data';
-
 
 function App() {
   const mapElement = useRef();
@@ -11,7 +14,42 @@ function App() {
   const [latitude, setLatitude] = useState(24.9403737);
   const [longitude, setLongitude] = useState(92.6029585);
 
+  // -------------------------------------------------------------
+  const [cons, setCons] = useState([]);
+
+  let filtered = [];
+
+  var result = {};
+
+  const clickCall = (Dtr_No) => {
+    const consumers = result.data.data;
+
+    filtered = consumers.filter((consumer) => {
+      return consumer.dtrno == Dtr_No;
+    });
+
+    console.log(filtered);
+
+    filtered.map((fconsumer) => {
+      console.log(
+        `Load: ${fconsumer.Load}, Lon: ${fconsumer.Longitude} , Lat: ${fconsumer.Latitude}, Cons_No.:${fconsumer['Cons No']}`
+      );
+    });
+
+    console.log(`dtr number ${Dtr_No} is clicked `);
+  };
+
   useEffect(() => {
+    const fetchData = async () => {
+      result = await axios.get(
+        'https://script.google.com/macros/s/AKfycbw7sFL-OzR0Th0Uk1g_GrF01MideeQhcy2Iqnie7azrxkaNVvL1_GlmSykheTnsP38O/exec'
+      );
+      setCons(result.data.data);
+    };
+    fetchData();
+
+    //-----------------------------------------------------------------------------------
+
     // const data = [
     //   {
     //     '': '0',
@@ -53,7 +91,7 @@ function App() {
           bottom: [0, -25],
         };
         const popup = new tt.Popup({ offset: popupOffset }).setHTML(
-          dtr.DTR_Name
+          `${dtr.DTR_Name}`
         );
         const element = document.createElement('div');
         if (dtr.Value == 1) {
@@ -70,6 +108,10 @@ function App() {
           .addTo(map);
 
         marker.setPopup(popup).togglePopup();
+
+        element.addEventListener('click', () => {
+          clickCall(dtr.Dtr_No);
+        });
       });
     };
 
@@ -81,9 +123,16 @@ function App() {
   return (
     <>
       {map && (
-        <div className="app">
-          <div ref={mapElement} className="map"></div>
-        </div>
+        <>
+          <div className="app">
+            <div ref={mapElement} className="map"></div>
+          </div>
+          <div>
+            {filtered.map((fcon) => {
+              <h1>{fcon.Load}</h1>;
+            })}
+          </div>
+        </>
       )}
     </>
   );
